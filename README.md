@@ -13,3 +13,6 @@ Currently we are woirking on the developement of its third version, the DroneLog
 <p align="center">
   <img src="images/dis_on.png" width="450" title="Logger">
 </p>
+<p align="center">
+  For more project renders visit https://drive.google.com/open?id=15V17U4fyG8UWCgDT7VXWYKG3Q6TNWTw7
+  </p>
