@@ -27,6 +27,7 @@ float start_longtitude = 0.0;
 
 int pitchToPrint;
 int rollToPrint;
+double distanceToHome = 0;
 double courseToHome = 0;
 double courseToNavigate;
 int smoothHeadingDegrees;
@@ -232,253 +233,252 @@ void loop() {
     digitalWrite(22, LOW);
     }
   */
-  distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
-  courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
   unsigned long period_currentMillis = millis();
-  if (period_currentMillis - period_previousMillis > period_interval) {
-    period_previousMillis = period_currentMillis;
+  if(period_currentMillis - period_previousMillis > period_interval) {
+    period_previousMillis = period_currentMillis;  
     Serial.print("t0.txt=");
-    Serial.print('"');
-    Serial.print((int)bmp_altitude);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("t1.txt=");
-    Serial.print('"');
-    Serial.print((int)speed_kmph);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("t2.txt=");
-    Serial.print('"');
-    Serial.print(time_hour);
-    Serial.print(':');
-    if (time_minute < 10)  {
-      Serial.print('0');
+      Serial.print('"');
+      Serial.print((int)bmp_altitude);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("t1.txt=");
+      Serial.print('"');
+      Serial.print((int)speed_kmph);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("t2.txt=");
+      Serial.print('"');
+      Serial.print(time_hour);
+      Serial.print(':');
+      if (time_minute < 10)  {
+        Serial.print('0');
+      }
+      Serial.print(time_minute);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t4.txt=");
+      Serial.print('"');
+      Serial.print(gps_day);
+      Serial.print('.');
+      Serial.print(gps_month);
+      Serial.print('.');
+      Serial.print(gps_year);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t6.txt=");
+      Serial.print('"');
+      Serial.print(latitude);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t7.txt=");
+      Serial.print('"');
+      Serial.print(longtitude);
+      Serial.print('"');
+      writeToNextion();
+      distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
+      courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
+      Serial.print("page1.t17.txt=");
+      Serial.print('"');
+      Serial.print(courseToHome);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t18.txt=");
+      Serial.print('"');
+      Serial.print(distanceToHome);
+      Serial.print('"');
+      writeToNextion();
+  }
+    if (last_bmp_altitude != bmp_altitude and bmp_altitude > 0)  {
+      Serial.print("t0.txt=");
+      Serial.print('"');
+      Serial.print((int)bmp_altitude);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
     }
-    Serial.print(time_minute);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t4.txt=");
-    Serial.print('"');
-    Serial.print(gps_day);
-    Serial.print('.');
-    Serial.print(gps_month);
-    Serial.print('.');
-    Serial.print(gps_year);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t6.txt=");
-    Serial.print('"');
-    Serial.print(latitude, 6);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t7.txt=");
-    Serial.print('"');
-    Serial.print(longtitude, 6);
-    Serial.print('"');
-    writeToNextion();
+    if (last_speed_kmph != speed_kmph and speed_kmph > 0 and speed_kmph < 100)  {
+      Serial.print("t1.txt=");
+      Serial.print('"');
+      Serial.print((int)speed_kmph);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    if (last_time_minute != time_minute and time_hour != 0) {
+      Serial.print("t2.txt=");
+      Serial.print('"');
+      Serial.print(time_hour);
+      Serial.print(':');
+      if (time_minute < 10)  {
+        Serial.print('0');
+      }
+      Serial.print(time_minute);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    if (last_gps_month != gps_month or last_gps_day != gps_day or last_gps_year != gps_year) {
+      Serial.print("page1.t4.txt=");
+      Serial.print('"');
+      Serial.print(gps_day);
+      Serial.print('.');
+      Serial.print(gps_month);
+      Serial.print('.');
+      Serial.print(gps_year);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    if (last_latitude != latitude) {
+      Serial.print("page1.t6.txt=");
+      Serial.print('"');
+      Serial.print(latitude,6);
+      Serial.print('"');
+      if (latitude > 0 && i == 0)  {
+        start_latitude = latitude;
+        i++;
+      }
+      writeToNextion();
+      animacia();
+    }
+    if (last_longtitude != longtitude) {
+      Serial.print("page1.t7.txt=");
+      Serial.print('"');
+      Serial.print(longtitude,6);
+      Serial.print('"');
+      if (longtitude > 0 && o == 0)  {
+        start_longtitude = longtitude;
+        o++;
+      }
+      writeToNextion();
+      animacia();
+    }
+    if (last_start_latitude != start_latitude or last_start_longtitude != start_longtitude)  {
+      Serial.print("page1.t11.txt=");
+      Serial.print('"');
+      Serial.print(start_latitude,6);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t12.txt=");
+      Serial.print('"');
+      Serial.print(start_longtitude,6);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    if (last_smoothHeadingDegrees != smoothHeadingDegrees or last_courseToHome != courseToHome or last_distanceToHome != distanceToHome) {
 
-    Serial.print("page1.t17.txt=");
-    Serial.print('"');
-    Serial.print(courseToHome);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t18.txt=");
-    Serial.print('"');
-    Serial.print(distanceToHome);
-    Serial.print('"');
-    writeToNextion();
-  }
-  if (last_bmp_altitude != bmp_altitude and bmp_altitude > 0)  {
-    Serial.print("t0.txt=");
-    Serial.print('"');
-    Serial.print((int)bmp_altitude);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_speed_kmph != speed_kmph and speed_kmph > 0 and speed_kmph < 100)  {
-    Serial.print("t1.txt=");
-    Serial.print('"');
-    Serial.print((int)speed_kmph);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_time_minute != time_minute and time_hour != 0) {
-    Serial.print("t2.txt=");
-    Serial.print('"');
-    Serial.print(time_hour);
-    Serial.print(':');
-    if (time_minute < 10)  {
-      Serial.print('0');
-    }
-    Serial.print(time_minute);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_gps_month != gps_month or last_gps_day != gps_day or last_gps_year != gps_year) {
-    Serial.print("page1.t4.txt=");
-    Serial.print('"');
-    Serial.print(gps_day);
-    Serial.print('.');
-    Serial.print(gps_month);
-    Serial.print('.');
-    Serial.print(gps_year);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_latitude != latitude) {
-    Serial.print("page1.t6.txt=");
-    Serial.print('"');
-    Serial.print(latitude, 6);
-    Serial.print('"');
-    if (latitude > 0 && i == 0)  {
-      start_latitude = latitude;
-      i++;
-    }
-    writeToNextion();
-    animacia();
-  }
-  if (last_longtitude != longtitude) {
-    Serial.print("page1.t7.txt=");
-    Serial.print('"');
-    Serial.print(longtitude, 6);
-    Serial.print('"');
-    if (longtitude > 0 && o == 0)  {
-      start_longtitude = longtitude;
-      o++;
-    }
-    writeToNextion();
-    animacia();
-  }
-  if (last_start_latitude != start_latitude or last_start_longtitude != start_longtitude)  {
-    Serial.print("page1.t11.txt=");
-    Serial.print('"');
-    Serial.print(start_latitude, 6);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t12.txt=");
-    Serial.print('"');
-    Serial.print(start_longtitude, 6);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_smoothHeadingDegrees != smoothHeadingDegrees or last_courseToHome != courseToHome or last_distanceToHome != distanceToHome) {
-
-    if (course_offset >= 0)  {
-      if (smoothHeadingDegrees + course_offset < 359)  {
-        smoothHeadingDegrees += course_offset;
+      if (course_offset >= 0)  {
+        if (smoothHeadingDegrees + course_offset < 359)  {
+          smoothHeadingDegrees += course_offset;
+        }
+        else  {
+          smoothHeadingDegrees = smoothHeadingDegrees + course_offset - 359;
+        }
       }
       else  {
-        smoothHeadingDegrees = smoothHeadingDegrees + course_offset - 359;
+        if (smoothHeadingDegrees + course_offset <= 0) {
+          smoothHeadingDegrees = 359 + (smoothHeadingDegrees + course_offset);
+        }
+        else  {
+          smoothHeadingDegrees += course_offset;
+        }
       }
-    }
-    else  {
-      if (smoothHeadingDegrees + course_offset <= 0) {
-        smoothHeadingDegrees = 359 + (smoothHeadingDegrees + course_offset);
-      }
-      else  {
-        smoothHeadingDegrees += course_offset;
-      }
-    }
-    Serial.print("page1.z0.val=");
-    Serial.print(smoothHeadingDegrees);
-    writeToNextion();
-    animacia();
-    distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
-    courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
-    if (course_offset >= 0)  {
-      if (courseToHome + course_offset < 359)  {
-        courseToHome += course_offset;
-      }
-      else  {
-        courseToHome = courseToHome + course_offset - 359;
-      }
-    }
-    else  {
-      if (courseToHome + course_offset <= 0) {
-        courseToHome = 359 + (courseToHome + course_offset);
+      Serial.print("page1.z0.val=");
+      Serial.print(smoothHeadingDegrees);
+      writeToNextion();
+      animacia();
+      distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
+      courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
+      if (course_offset >= 0)  {
+        if (courseToHome + course_offset < 359)  {
+          courseToHome += course_offset;
+        }
+        else  {
+          courseToHome = courseToHome + course_offset - 359;
+        }
       }
       else  {
-        courseToHome += course_offset;
+        if (courseToHome + course_offset <= 0) {
+          courseToHome = 359 + (courseToHome + course_offset);
+        }
+        else  {
+          courseToHome += course_offset;
+        }
       }
+      Serial.print("page1.z1.val=");
+      Serial.print(courseToHome);
+      writeToNextion();
+      Serial.print("page1.t17.txt=");
+      Serial.print('"');
+      Serial.print(courseToHome);
+      Serial.print('"');
+      writeToNextion();
+      Serial.print("page1.t18.txt=");
+      Serial.print('"');
+      Serial.print(distanceToHome);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
     }
-    Serial.print("page1.z1.val=");
-    Serial.print(courseToHome);
-    writeToNextion();
-    Serial.print("page1.t17.txt=");
-    Serial.print('"');
-    Serial.print(courseToHome);
-    Serial.print('"');
-    writeToNextion();
-    Serial.print("page1.t18.txt=");
-    Serial.print('"');
-    Serial.print(distanceToHome);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_roll != roll or last_pitch != pitch) {
-    printHorizont();
-  }
-  if (last_distanceToHome != distanceToHome) {
-    distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
-    courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
-    Serial.print("page1.t18.txt=");
-    Serial.print('"');
-    Serial.print(distanceToHome);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  if (last_courseToHome != courseToHome) {
-    distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
-    courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
-    Serial.print("page1.t17.txt=");
-    Serial.print('"');
-    Serial.print(courseToHome);
-    Serial.print('"');
-    writeToNextion();
-    animacia();
-  }
-  //Serial.print("page1.p2.pic=10");
-  //writeToNextion();
+    if (last_roll != roll or last_pitch != pitch) {
+      printHorizont();
+    }
+    if(last_distanceToHome != distanceToHome) {
+      distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
+      courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
+      Serial.print("page1.t18.txt=");
+      Serial.print('"');
+      Serial.print(distanceToHome);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    if(last_courseToHome != courseToHome) {
+      distanceToHome =  TinyGPSPlus::distanceBetween(latitude, longtitude, start_latitude, start_longtitude);
+      courseToHome =    TinyGPSPlus::courseTo((double)latitude, (double)longtitude, (double)start_latitude, (double)start_longtitude);
+      Serial.print("page1.t17.txt=");
+      Serial.print('"');
+      Serial.print(courseToHome);
+      Serial.print('"');
+      writeToNextion();
+      animacia();
+    }
+    //Serial.print("page1.p2.pic=10");
+    //writeToNextion();
 
 
-  //serialOutput();
-  last_smoothHeadingDegrees = smoothHeadingDegrees;
-  last_pitch = pitch;
-  last_roll = roll;
-  last_temperature = temperature;
-  last_fix_data = fix_data;
-  last_latitude = latitude;
-  last_longtitude = longtitude;
-  last_fix_age = fix_age;
-  last_gps_month = gps_month, last_gps_day = gps_day, last_gps_year = gps_year;
-  last_time_hour = time_hour, last_time_minute = time_minute;
-  last_alt = alt;
-  last_speed_kmph = speed_kmph;
-  last_distanceToLondon = distanceToLondon;
-  last_start_longtitude = start_longtitude;
-  last_start_latitude = start_latitude;
-  last_courseToHome = courseToHome;
-  last_but = but;
-  last_arm = arm;
-  last_distanceToHome = distanceToHome;
-  last_bmp_temperature = bmp_temperature;
-  last_bmp_pressure = bmp_pressure;
-  last_bmp_altitude = bmp_altitude;
-  last_gps_course = gps_course;
-  last_courseToNavigate = courseToNavigate;
-  last_LONGTITUDE = LONGTITUDE;
-  last_LATITUDE = LATITUDE;
-  last_distanceToPoint = distanceToPoint;
-  last_distanceToHome = distanceToHome;
-  last_courseToHome = courseToHome;
-
+    //serialOutput();
+    last_smoothHeadingDegrees = smoothHeadingDegrees;
+    last_pitch = pitch;
+    last_roll = roll;
+    last_temperature = temperature;
+    last_fix_data = fix_data;
+    last_latitude = latitude;
+    last_longtitude = longtitude;
+    last_fix_age = fix_age;
+    last_gps_month = gps_month, last_gps_day = gps_day, last_gps_year = gps_year;
+    last_time_hour = time_hour, last_time_minute = time_minute;
+    last_alt = alt;
+    last_speed_kmph = speed_kmph;
+    last_distanceToLondon = distanceToLondon;
+    last_start_longtitude = start_longtitude;
+    last_start_latitude = start_latitude;
+    last_courseToHome = courseToHome;
+    last_but = but;
+    last_arm = arm;
+    last_distanceToHome = distanceToHome;
+    last_bmp_temperature = bmp_temperature;
+    last_bmp_pressure = bmp_pressure;
+    last_bmp_altitude = bmp_altitude;
+    last_gps_course = gps_course;
+    last_courseToNavigate = courseToNavigate;
+    last_LONGTITUDE = LONGTITUDE;
+    last_LATITUDE = LATITUDE;
+    last_distanceToPoint = distanceToPoint;
+    last_distanceToHome = distanceToHome;
+    last_courseToHome = courseToHome;
+ 
 
 }
 void serialOutput() {
@@ -632,10 +632,10 @@ void pitchMode()  {
   if (pitch == 20 or pitch == 21)  {
     rollToPrint += 1000;
   }
-  if (pitch < -21) {
+  if(pitch < -21) {
     rollToPrint += 950;
   }
-  if (pitch > 21) {
+  if(pitch > 21) {
     rollToPrint += 1000;
   }
 }
